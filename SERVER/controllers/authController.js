@@ -61,7 +61,6 @@ router.post("/login", async(req, res) => {
      } 
 
     //3. If the user exists and password is correct, assign a JWT
-    
     //authentication token
     const token = jwt.sign({userId: user._id}, process.env.SECRET_KEY, {expiresIn: "1d"});
 
