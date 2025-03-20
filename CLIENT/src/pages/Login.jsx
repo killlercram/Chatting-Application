@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { loginUser } from "../apiCalls/auth";
 
 const Login = () => {
   //getting and Setting the user details
@@ -16,9 +17,26 @@ const Login = () => {
   };
 
   //handling the form during submission
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(user);
+    // console.log("User Object Before Sending:", user);
+    let response = null;
+    try {
+      response = await loginUser(user);
+      //  console.log("Login Response",response);
+      if (response.success) {
+        alert(response.message);
+        //keeping the token variable in local
+        localStorage.setItem("token", response.token);
+        window.location.href = "/";
+
+      } else {
+        alert(response.message);
+      }
+    } catch (error) {
+      const errMsg = error.response?.data?.message;
+      alert(errMsg);
+    }
   };
 
   return (

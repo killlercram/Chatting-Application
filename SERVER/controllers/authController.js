@@ -41,16 +41,19 @@ router.post("/signup", async (req, res) => {
 
 //Login or signin for checking if user is present
 router.post("/login", async(req, res) => {
+  // console.log("Received Request body", req.body);
   const {email, password} = req.body; 
   try {
     //1. Check if user exists or not
-   const user = await User.findOne({email: email});
+   const user = await User.findOne({email: email}).select("+password");
+  //  console.log("User from DB:", user);
    if (!user) {
     return res.status(404).send({
       message: "User does not exist",
       success: false
     });
    } 
+  //  console.log("Stored password:", user.password);
     //2. check if the password is correct
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {

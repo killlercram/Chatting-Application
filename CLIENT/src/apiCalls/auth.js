@@ -1,7 +1,7 @@
 import { axiosInstance } from "./index";
 
 //signup User function
-const signupUser = async (user) =>{
+export const signupUser = async (user) =>{
   try {
     const response = await axiosInstance.post("/api/auth/signup", user);
     return response.data;
@@ -11,4 +11,19 @@ const signupUser = async (user) =>{
     return {success: false, message: errorMessage};
   }
 };
-export default signupUser;
+
+//Sending a Login Request
+export const loginUser = async (user) =>{
+  try {
+    const response = await axiosInstance.post("/api/auth/login",user);
+    //  console.log("Auth Response",response.data);
+    return response.data;
+    
+  } catch (error) {
+    console.log("Auth Error",error);
+    const errMsg = error.response?.data?.message;
+    console.log("errMsg",errMsg);
+    return {success: false, message: errMsg};
+  }
+};
+
