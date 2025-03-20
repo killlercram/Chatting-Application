@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   //values must be same as in backend schema
@@ -71,7 +72,7 @@ const Signup = () => {
         <div className="card_terms">
           <span>
             Already have an account?
-            <a href="/login">Login</a>
+            <Link to="/login">Login</Link>
           </span>
         </div>
       </div>
