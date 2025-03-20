@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import signupUser from "../apiCalls/auth";
+
 
 const Signup = () => {
   //values must be same as in backend schema
@@ -18,9 +20,22 @@ const Signup = () => {
   }
 
   //handling Form submission
-  const handleSubmit = (event) =>{
+  const handleSubmit = async (event) =>{
     event.preventDefault();
-    console.log(user);
+    let response = null;
+    try {
+      response = await signupUser(user);
+      console.log(response);
+      if(response.success){
+        alert(response.message);
+      }else{
+        alert(response.message);
+      }
+    } catch (error) {
+      // alert(response.message || error.message);
+      console.error("Signup error:", error.response?.data || error.message);
+      return error.response?.data || { message: "Something went wrong!" };
+    }
   }
 
   return (
