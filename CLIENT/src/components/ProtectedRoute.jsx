@@ -3,8 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { getLoggedinUser } from '../apiCalls/users';
+import { useDispatch } from 'react-redux';
+import { hideLoader, showLoader } from '../redux/loaderSlice';
 
 const ProtectedRoute = ({children}) => {
+  const dispatch = useDispatch();
 
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -13,8 +16,10 @@ const ProtectedRoute = ({children}) => {
   const getLoggedInUser  = async () =>{
     let response = null;
 try {
-   response = await getLoggedinUser();
-
+  dispatch(showLoader());
+  response = await getLoggedinUser();
+  dispatch(hideLoader());
+  
   if (response.success) {
     setUser(response.data);
   }else{

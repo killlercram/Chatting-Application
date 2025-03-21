@@ -2,9 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {signupUser} from "../apiCalls/auth";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { hideLoader, showLoader } from "../redux/loaderSlice";
 
 
 const Signup = () => {
+  const dispatch = useDispatch();
   //values must be same as in backend schema
   const [user, setUser] = useState({
     firstname: "",
@@ -25,7 +28,9 @@ const Signup = () => {
     event.preventDefault();
     let response = null;
     try {
+      dispatch(showLoader());//showing the function
       response = await signupUser(user);
+      dispatch(hideLoader());//hiding the function
       // console.log(response);
       if(response.success){
         toast.success(response.message);
@@ -33,6 +38,7 @@ const Signup = () => {
         toast.error(response.message);
       }
     } catch (error) {
+      dispatch(hideLoader());//hiding the function
       toast.error(response.message || error.message);
       // console.error("Signup error:", error.response?.data || error.message);
       // return error.response?.data || { message: "Something went wrong!" };

@@ -2,8 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { loginUser } from "../apiCalls/auth";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { hideLoader, showLoader } from "../redux/loaderSlice";
 
 const Login = () => {
+  //getting values from redux store/or can call the action
+ const dispatch = useDispatch();
   //getting and Setting the user details
   const [user, setUser] = useState({
     email: "",
@@ -23,18 +27,21 @@ const Login = () => {
     // console.log("User Object Before Sending:", user);
     let response = null;
     try {
+      dispatch(showLoader());//showing the waiting indicator 
       response = await loginUser(user);
+      dispatch(hideLoader());//hiding the waiting indicator 
       //  console.log("Login Response",response);
       if (response.success) {
         toast.success(response.message);
         //keeping the token variable in local
         localStorage.setItem("token", response.token);
-         window.location.href = "/";
-
+        window.location.href = "/";
+        
       } else {
         toast.error(response.message);
       }
     } catch (error) {
+      dispatch(hideLoader());//hiding the waiting indicator 
       const errMsg = error.response?.data?.message;
       toast.error(errMsg);
     }
