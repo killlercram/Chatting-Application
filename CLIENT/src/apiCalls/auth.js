@@ -20,9 +20,9 @@ export const loginUser = async (user) =>{
     return response.data;
     
   } catch (error) {
-    console.log("Auth Error",error);
+    // console.log("Auth Error",error);
     const errMsg = error.response?.data?.message;
-    console.log("errMsg",errMsg);
+    // console.log("errMsg",errMsg);
     return {success: false, message: errMsg};
   }
 };

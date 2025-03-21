@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { loginUser } from "../apiCalls/auth";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
   //getting and Setting the user details
@@ -25,17 +26,17 @@ const Login = () => {
       response = await loginUser(user);
       //  console.log("Login Response",response);
       if (response.success) {
-        alert(response.message);
+        toast.success(response.message);
         //keeping the token variable in local
         localStorage.setItem("token", response.token);
-        window.location.href = "/";
+         window.location.href = "/";
 
       } else {
-        alert(response.message);
+        toast.error(response.message);
       }
     } catch (error) {
       const errMsg = error.response?.data?.message;
-      alert(errMsg);
+      toast.error(errMsg);
     }
   };
 

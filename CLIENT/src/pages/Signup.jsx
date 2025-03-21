@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {signupUser} from "../apiCalls/auth";
+import { toast } from "react-hot-toast";
 
 
 const Signup = () => {
@@ -27,12 +28,12 @@ const Signup = () => {
       response = await signupUser(user);
       // console.log(response);
       if(response.success){
-        alert(response.message);
+        toast.success(response.message);
       }else{
-        alert(response.message);
+        toast.error(response.message);
       }
     } catch (error) {
-      alert(response.message || error.message);
+      toast.error(response.message || error.message);
       // console.error("Signup error:", error.response?.data || error.message);
       // return error.response?.data || { message: "Something went wrong!" };
     }

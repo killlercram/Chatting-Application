@@ -11,7 +11,7 @@ router.get("/get-logged-user", authMiddleware, async (req, res) => {
 
     res.status(200).send({
       message: "User fetched successfully!",
-      status: true,
+      success: true,
       data: user
     });
   } catch (error) {
