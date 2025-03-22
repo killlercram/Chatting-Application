@@ -3,16 +3,20 @@ import { useSelector } from "react-redux";
 
 const UsersList = ({ searchKey }) => {
   //importing all users from database
-  const { allUsers } = useSelector((state) => state.userReducer);
+  const { allUsers, allChats } = useSelector((state) => state.userReducer);
 
   //we will filter name with all name entered
   //then display all those in side bar
   return allUsers
     .filter((user) => {
       return (
-        (user.firstname.toLowerCase().includes(searchKey.toLowerCase()) ||
-          user.lastname.toLowerCase().includes(searchKey.toLowerCase())) &&
-        searchKey
+        (
+          //If the database contains letter as per search key
+          //and after or we are writing if he had chat before
+          (user.firstname.toLowerCase().includes(searchKey.toLowerCase()) ||
+          user.lastname.toLowerCase().includes(searchKey.toLowerCase())) && searchKey
+        ) || (allChats.some(chat => chat.members.includes(user._id)))
+        
       );
     })
     .map((user) => {
@@ -43,9 +47,11 @@ const UsersList = ({ searchKey }) => {
                 <div className="last-message-timestamp"></div>
               </div>
 
-              <div className="user-start-chat">
-                <button className="user-start-chat-btn">Start Chat</button>
-              </div>
+              {!allChats.find((chat) => chat.members.includes(user._id)) && (
+                <div className="user-start-chat">
+                  <button className="user-start-chat-btn">Start Chat</button>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -6,7 +6,8 @@ import { getLoggedinUser, getAllUsers } from "../apiCalls/users";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoader, showLoader } from "../redux/loaderSlice";
 import toast from "react-hot-toast";
-import { setAllUsers, setUser } from "../redux/userSlice";
+import { setAllChats, setAllUsers, setUser } from "../redux/userSlice";
+import { getAllChats } from "../apiCalls/chat";
 
 const ProtectedRoute = ({ children }) => {
   // const [user, setUser] = useState(null);
@@ -61,6 +62,28 @@ const ProtectedRoute = ({ children }) => {
     }
   };
 
+  //Getting all the chats of the loggedin User
+  const getCurrentUserChats = async () =>{
+    let response = null;
+    try {
+      dispatch(showLoader());
+      response = await getAllChats();
+      dispatch(hideLoader());
+      // console.log("REsponse", response);
+      if (response.success) {
+        // console.log("response: ",response);
+        dispatch(setAllChats(response.data));
+      } else {
+        //  console.log("PR er1", user);
+        toast.error(response.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      dispatch(hideLoader());
+      navigate("/login");
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -69,6 +92,7 @@ const ProtectedRoute = ({ children }) => {
       // getting user's details
       getLoggedInUser();
       getAllUsersFromDb();
+      getCurrentUserChats();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
