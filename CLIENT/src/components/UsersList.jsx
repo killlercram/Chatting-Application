@@ -1,9 +1,37 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { createNewChat } from "../apiCalls/chat";
+import {hideLoader, showLoader} from "../redux/loaderSlice";
+import {setAllChats} from "../redux/userSlice";
 
 const UsersList = ({ searchKey }) => {
   //importing all users from database
-  const { allUsers, allChats } = useSelector((state) => state.userReducer);
+  const { allUsers, allChats, user: currentUser } = useSelector((state) => state.userReducer);
+  const dispatch = useDispatch();
+
+//Creating new Chat
+const startNewChat = async (searchedUserId) => {
+  let response = null;
+  try {
+    dispatch(showLoader());
+    // console.log("CU",currentUser); 
+    response = await createNewChat([currentUser._id, searchedUserId])
+    dispatch(hideLoader());
+    console.log("res",response);
+    if(response.success){
+      toast.success(response.message);
+      //getting the new chat
+      const newChat = response.data;
+      //adding new Chats with previous chats
+      const updatedChat = [...allChats, newChat];
+      //updating store with newly added chat
+      dispatch(setAllChats(updatedChat));
+    }
+  } catch (error) {
+    toast.error(response?.message || error.message);
+  }
+}
 
   //we will filter name with all name entered
   //then display all those in side bar
@@ -49,7 +77,7 @@ const UsersList = ({ searchKey }) => {
 
               {!allChats.find((chat) => chat.members.includes(user._id)) && (
                 <div className="user-start-chat">
-                  <button className="user-start-chat-btn">Start Chat</button>
+                  <button className="user-start-chat-btn" onClick = {() => startNewChat(user._id)}>Start Chat</button>
                 </div>
               )}
             </div>
