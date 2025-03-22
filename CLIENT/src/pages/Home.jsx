@@ -1,6 +1,7 @@
 import React from 'react'
 import HomeHeader from '../components/HomeHeader';
 import SideBar from '../components/SideBar';
+import ChatArea from '../components/ChatArea';
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
       <div className="main-content">
         {/* SideBar layout */}
         <SideBar></SideBar>
+        <ChatArea></ChatArea>
         
         {/* Chat Area layout */}
       </div>

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { createNewChat } from "../apiCalls/chat";
 import {hideLoader, showLoader} from "../redux/loaderSlice";
-import {setAllChats} from "../redux/userSlice";
+import {setAllChats,setSelectedChat} from "../redux/userSlice";
 
 const UsersList = ({ searchKey }) => {
   //importing all users from database
@@ -18,7 +18,8 @@ const startNewChat = async (searchedUserId) => {
     // console.log("CU",currentUser); 
     response = await createNewChat([currentUser._id, searchedUserId])
     dispatch(hideLoader());
-    console.log("res",response);
+    // console.log("res",response);
+
     if(response.success){
       toast.success(response.message);
       //getting the new chat
@@ -27,11 +28,29 @@ const startNewChat = async (searchedUserId) => {
       const updatedChat = [...allChats, newChat];
       //updating store with newly added chat
       dispatch(setAllChats(updatedChat));
+      dispatch(setSelectedChat(newChat));
     }
   } catch (error) {
     toast.error(response?.message || error.message);
   }
 }
+
+//Opening chat for the selected user:
+const openChat = (selectedUser) => {
+  //getting selected userid and logged user id from members arr 
+  const chat = allChats.find(chat =>
+     chat.members.includes(currentUser._id) && 
+     chat.members.includes(selectedUser._id)
+    )
+    if(chat){
+      dispatch(setSelectedChat(chat));
+      // console.log("Chat Selected:", chat);
+    } else {
+      console.log("No chat found with this user!");
+    }
+}
+
+
 
   //we will filter name with all name entered
   //then display all those in side bar
@@ -49,7 +68,7 @@ const startNewChat = async (searchedUserId) => {
     })
     .map((user) => {
       return (
-        <div key={user._id} className="user-search-filter">
+        <div key={user._id} className="user-search-filter" onClick={() => openChat(user)}>
           <div className="filtered-user">
             <div className="filter-user-display">
               {user.profilePic && (
