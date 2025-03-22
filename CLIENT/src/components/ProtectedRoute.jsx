@@ -1,62 +1,78 @@
 /* eslint-disable no-unused-vars */
 
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import { getLoggedinUser } from '../apiCalls/users';
-import { useDispatch, useSelector } from 'react-redux';
-import { hideLoader, showLoader } from '../redux/loaderSlice';
-import toast from 'react-hot-toast';
-import { setUser } from '../redux/userSlice';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getLoggedinUser, getAllUsers } from "../apiCalls/users";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoader, showLoader } from "../redux/loaderSlice";
+import toast from "react-hot-toast";
+import { setAllUsers, setUser } from "../redux/userSlice";
 
-const ProtectedRoute = ({children}) => {
- 
+const ProtectedRoute = ({ children }) => {
   // const [user, setUser] = useState(null);
-  const {user} = useSelector(state => state.userReducer);
+  const { user } = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
-
 
   const navigate = useNavigate();
 
   //getting and setting user with logged in details
-  const getLoggedInUser  = async () =>{
+  const getLoggedInUser = async () => {
     let response = null;
-try {
-  dispatch(showLoader());
-  response = await getLoggedinUser();
-  dispatch(hideLoader());
-  
-  if (response.success) {
-    dispatch(setUser( response.data));
-    // console.log("PR", user);
-  }else{
-    // console.log("PR er1", user);
-    toast.error(response.message);
-    navigate("/login");
-  }
-} catch (error) {
-  console.log("PR er2", user);
-  dispatch(hideLoader());
-  navigate("/login");
-}
+    try {
+      dispatch(showLoader());
+      response = await getLoggedinUser();
+      dispatch(hideLoader());
+
+      if (response.success) {
+        dispatch(setUser(response.data));
+        // console.log("PR", user);
+      } else {
+        // console.log("PR er1", user);
+        toast.error(response.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      // console.log("PR er2", user);
+      dispatch(hideLoader());
+      navigate("/login");
+    }
+  };
+
+  //Getting details of all the users
+  const getAllUsersFromDb = async () => {
+    let response = null;
+    try {
+      dispatch(showLoader());
+      response = await getAllUsers();
+      dispatch(hideLoader());
+      // console.log("REsponse", response);
+      if (response.success) {
+        // console.log("response: ",response);
+        dispatch(setAllUsers(response.data));
+      } else {
+        //  console.log("PR er1", user);
+        toast.error(response.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      // console.log("PR err2:" ,user);
+      dispatch(hideLoader());
+      navigate("/login");
+    }
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if(!token){
+    if (!token) {
       navigate("/login");
-    }else {
-      //getting user's details
+    } else {
+      // getting user's details
       getLoggedInUser();
+      getAllUsersFromDb();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
-  return (
-    <>
-    {children}
-    </>
-  )
-}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return <>{children}</>;
+};
 
 export default ProtectedRoute;
-
-

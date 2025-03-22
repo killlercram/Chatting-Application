@@ -31,7 +31,7 @@ router.get("/get-all-users", authMiddleware, async (req, res) => {
 
     res.status(200).send({
       message: "All users fetched successfully!",
-      status: true,
+      success: true,
       data: allUsers
     });
   } catch (error) {

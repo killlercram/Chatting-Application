@@ -3,18 +3,20 @@ import { useSelector } from "react-redux";
 
 const HomeHeader = () => {
   const { user } = useSelector((state) => state.userReducer);
-  console.log(user);
+  //  console.log(user);
+  //  console.log(user?.firstname ? user?.firstname.toUpperCase() : "");
+
 
   //getting Full name from the redux store
   function getFullname() {
-    let fname = user?.firstname.toUpperCase();
-    let lname = user?.lastname.toUpperCase();
+    let fname = user?.firstname ? user?.firstname.toUpperCase() : "";
+    let lname = user?.lastname ? user?.lastname.toUpperCase() : " ";
     return fname + " " + lname;
   }
   //Geting the initials from the name
   function getInitials() {
-    let fnameIn = user?.firstname.toUpperCase()[0];
-    let lnameIn = user?.lastname.toUpperCase()[0];
+    let fnameIn = user?.firstname ? user?.firstname.toUpperCase()[0] : " ";
+    let lnameIn = user?.lastname ? user?.lastname.toUpperCase()[0] : " ";
     return fnameIn + lnameIn;
   }
   return (
