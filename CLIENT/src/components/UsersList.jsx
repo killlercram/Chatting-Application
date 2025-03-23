@@ -7,7 +7,7 @@ import {setAllChats,setSelectedChat} from "../redux/userSlice";
 
 const UsersList = ({ searchKey }) => {
   //importing all users from database
-  const { allUsers, allChats, user: currentUser } = useSelector((state) => state.userReducer);
+  const { allUsers, allChats, user: currentUser , selectedChat } = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
 
 //Creating new Chat
@@ -37,10 +37,10 @@ const startNewChat = async (searchedUserId) => {
 
 //Opening chat for the selected user:
 const openChat = (selectedUser) => {
-  //getting selected userid and logged user id from members arr 
+//getting selected userid and logged user id from members arr 
   const chat = allChats.find(chat =>
-     chat.members.includes(currentUser._id) && 
-     chat.members.includes(selectedUser._id)
+     chat.members.map(m => m._id).includes(currentUser._id) && 
+     chat.members.map(m => m._id).includes(selectedUser._id)
     )
     if(chat){
       dispatch(setSelectedChat(chat));
@@ -50,7 +50,13 @@ const openChat = (selectedUser) => {
     }
 }
 
-
+//taking only the selected chat for highlighting
+const IsSelectedChat = (user) => {
+if(selectedChat){
+  return selectedChat.members.map(m => m._id).includes(user._id);
+}
+return false;
+}
 
   //we will filter name with all name entered
   //then display all those in side bar
@@ -62,14 +68,14 @@ const openChat = (selectedUser) => {
           //and after or we are writing if he had chat before
           (user.firstname.toLowerCase().includes(searchKey.toLowerCase()) ||
           user.lastname.toLowerCase().includes(searchKey.toLowerCase())) && searchKey
-        ) || (allChats.some(chat => chat.members.includes(user._id)))
+        ) || (allChats.some(chat => chat.members.map(m => m._id).includes(user._id)))
         
       );
     })
     .map((user) => {
       return (
         <div key={user._id} className="user-search-filter" onClick={() => openChat(user)}>
-          <div className="filtered-user">
+          <div className={IsSelectedChat(user) ? "selected-user": "filtered-user"}>
             <div className="filter-user-display">
               {user.profilePic && (
                 <img
@@ -79,7 +85,7 @@ const openChat = (selectedUser) => {
                 />
               )}
               {!user.profilePic && (
-                <div className="user-default-profile-pic">
+                <div className={IsSelectedChat(user) ?"user-selected-avatar":"user-default-avatar"}>
                   {user.firstname.charAt(0).toUpperCase() +
                     user.lastname.charAt(0).toUpperCase()}
                 </div>
@@ -94,7 +100,7 @@ const openChat = (selectedUser) => {
                 <div className="last-message-timestamp"></div>
               </div>
 
-              {!allChats.find((chat) => chat.members.includes(user._id)) && (
+              {!allChats.find((chat) => chat.members.map(m => m._id).includes(user._id)) && (
                 <div className="user-start-chat">
                   <button className="user-start-chat-btn" onClick = {() => startNewChat(user._id)}>Start Chat</button>
                 </div>

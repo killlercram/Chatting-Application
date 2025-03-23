@@ -2,17 +2,19 @@ import React from 'react'
 import HomeHeader from '../components/HomeHeader';
 import SideBar from '../components/SideBar';
 import ChatArea from '../components/ChatArea';
+import { useSelector } from 'react-redux';
 
 const Home = () => {
+  const { selectedChat } = useSelector( state => state.userReducer );
   return (
     <div className="home-page">
       <HomeHeader></HomeHeader>
       <div className="main-content">
         {/* SideBar layout */}
         <SideBar></SideBar>
-        <ChatArea></ChatArea>
         
         {/* Chat Area layout */}
+        {selectedChat && <ChatArea></ChatArea>}
       </div>
     </div>
   );
