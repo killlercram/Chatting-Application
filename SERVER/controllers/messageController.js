@@ -43,7 +43,7 @@ router.get("/get-all-messages/:chatId", authMiddleware, async (req, res) =>{
   try {
     const allMessages = await Message.find({chatId: req.params.chatId}).sort({createdAt: -1});
 
-    res.status(200).send({
+    res.send({
       message: "Message Fetched successfully",
       success: true,
       data: allMessages
