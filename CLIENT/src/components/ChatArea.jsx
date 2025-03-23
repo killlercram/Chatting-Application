@@ -34,7 +34,6 @@ const ChatArea = () => {
       toast.error(error.message);
     }
   };
-
   //getting All messages
   const getMessage = async () => {
     try {
@@ -45,6 +44,7 @@ const ChatArea = () => {
 
       if (response.success) {
         setAllMessage(response.data);
+        // console.log(allMessage);
       }
     } catch (error) {
       dispatch(hideLoader());
@@ -52,9 +52,9 @@ const ChatArea = () => {
     }
   };
 
-  useEffect(()=> {
+  useEffect(() => {
     getMessage();
-  },[selectedChat])
+  }, [selectedChat]);
 
   return (
     <>
@@ -67,7 +67,13 @@ const ChatArea = () => {
           </div>
           <div className="main-chat-area">
             {/* CHAT AREA  */}
-            CHAT AREA
+            {allMessage.map(msg => {
+              const isCurrentUserSender = msg.sender === user._id;
+              return <div key={Math.random()} className="message-container" style={isCurrentUserSender ? {justifyContent: "end"} : {justifyContent: "start"}}>
+              <div className={isCurrentUserSender? "send-message" : "received-message"}>{msg.text}</div>
+            </div>
+            })}
+            
           </div>
           <div className="send-message-div">
             <input
