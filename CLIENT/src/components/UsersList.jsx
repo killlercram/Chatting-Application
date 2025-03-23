@@ -84,10 +84,10 @@ const UsersList = ({ searchKey }) => {
     const chat = allChats.find((chat) =>
       chat.members.map((m) => m._id).includes(userId)
     );
-    if (!chat || chat?.lastMessage) {
+    if (!chat || !chat?.lastMessage) {
       return "";
     } else {
-      return moment(chat?.lastMessage?.createdAt).format(`hh:mm A`);
+      return moment(chat?.lastMessage?.createdAt).format('hh:mm A');
     }
   };
 
@@ -101,6 +101,18 @@ const UsersList = ({ searchKey }) => {
     return fname + " " + lname;
   }
 
+  //Getting the count for unread message
+  const getUnreadMessageCount = (userId) => {
+    const chat = allChats.find(chat => 
+      chat.members.map(m => m._id).includes(userId)
+    );
+
+    if(chat && chat.unreadMessageCount && chat.lastMessage?.sender !== currentUser._id){
+      return <div className="unread-message-counter"> {chat.unreadMessageCount} </div>;
+    }else{
+      return "";
+    }
+  };
   //we will filter name with all name entered
   //then display all those in side bar
   return allUsers
@@ -148,15 +160,16 @@ const UsersList = ({ searchKey }) => {
               )}
               <div className="filter-user-details">
                 <div className="user-display-name">{formatName(user)}</div>
+                
                 <div className="user-display-email">
                   {getLastMessage(user._id) || user.email}
                 </div>
               </div>
               <div>
-                <div className="last-message-timestamp"></div>
-              </div>
+               {getUnreadMessageCount(user._id)}
               <div className="last-message-timestamp">
                 {getLastMessageTimeStamp(user._id)}
+              </div>
               </div>
               {!allChats.find((chat) =>
                 chat.members.map((m) => m._id).includes(user._id)

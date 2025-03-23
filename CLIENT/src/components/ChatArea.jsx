@@ -83,12 +83,12 @@ const ChatArea = () => {
     try {
       dispatch(showLoader());
       const response = await clearUnreadMessageCount(selectedChat._id);
-      console.log(response);
+      // console.log(response);
       dispatch(hideLoader());
       // console.log(response);
 
       if (response.success) {
-        console.log(allChats);
+        // console.log(allChats);
         allChats.map(chat => {
           if(chat._id === selectedChat._id){
             return response.data;
@@ -104,7 +104,10 @@ const ChatArea = () => {
 
   useEffect(() => {
     getMessage();
-    clearUnreadMessages();
+    //clearing message count if selected user sees it
+    if(selectedChat.lastMessage.sender !== user._id){
+      clearUnreadMessages();
+    }
   }, [selectedChat]);
 
   return (
