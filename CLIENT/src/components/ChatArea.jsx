@@ -4,9 +4,11 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoader, showLoader } from "../redux/loaderSlice";
 import { createNewMessage, getAllMessages } from "../apiCalls/message";
+import { clearUnreadMessageCount } from "../apiCalls/chat";
 import moment from "moment";
+
 const ChatArea = () => {
-  const { selectedChat, user } = useSelector((state) => state.userReducer);
+  const { selectedChat, user, allChats } = useSelector((state) => state.userReducer);
   //finding details of selectedUser,with whom user want to chat.
   const selectedUser = selectedChat.members.find((u) => u._id !== user._id);
 
@@ -76,9 +78,33 @@ const ChatArea = () => {
       user.lastname.at(0).toUpperCase() + user.lastname.slice(1).toLowerCase();
     return fname + " " + lname;
   }
+  //Clearing the unread Message Count
+  const clearUnreadMessages = async () => {
+    try {
+      dispatch(showLoader());
+      const response = await clearUnreadMessageCount(selectedChat._id);
+      console.log(response);
+      dispatch(hideLoader());
+      // console.log(response);
+
+      if (response.success) {
+        console.log(allChats);
+        allChats.map(chat => {
+          if(chat._id === selectedChat._id){
+            return response.data;
+          }
+          return chat;
+        })
+      }
+    } catch (error) {
+      dispatch(hideLoader());
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     getMessage();
+    clearUnreadMessages();
   }, [selectedChat]);
 
   return (
