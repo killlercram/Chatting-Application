@@ -6,11 +6,16 @@ const HomeHeader = () => {
   //  console.log(user);
   //  console.log(user?.firstname ? user?.firstname.toUpperCase() : "");
 
-
   //getting Full name from the redux store
   function getFullname() {
-    let fname = user?.firstname ? user?.firstname.toUpperCase() : "";
-    let lname = user?.lastname ? user?.lastname.toUpperCase() : " ";
+    let fname =
+      user?.firstname.at(0).toUpperCase() +
+      user?.firstname.slice(1).toLowerCase();
+
+    let lname =
+      user?.lastname.at(0).toUpperCase() +
+      user?.lastname.slice(1).toLowerCase();
+
     return fname + " " + lname;
   }
   //Geting the initials from the name
