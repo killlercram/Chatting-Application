@@ -87,7 +87,7 @@ const UsersList = ({ searchKey }) => {
     if (!chat || !chat?.lastMessage) {
       return "";
     } else {
-      return moment(chat?.lastMessage?.createdAt).format('hh:mm A');
+      return moment(chat?.lastMessage?.createdAt).format("hh:mm A");
     }
   };
 
@@ -103,91 +103,104 @@ const UsersList = ({ searchKey }) => {
 
   //Getting the count for unread message
   const getUnreadMessageCount = (userId) => {
-    const chat = allChats.find(chat => 
-      chat.members.map(m => m._id).includes(userId)
+    const chat = allChats.find((chat) =>
+      chat.members.map((m) => m._id).includes(userId)
     );
 
-    if(chat && chat.unreadMessageCount && chat.lastMessage?.sender !== currentUser._id){
-      return <div className="unread-message-counter"> {chat.unreadMessageCount} </div>;
-    }else{
+    if (
+      chat &&
+      chat.unreadMessageCount &&
+      chat.lastMessage?.sender !== currentUser._id
+    ) {
+      return (
+        <div className="unread-message-counter">
+          {" "}
+          {chat.unreadMessageCount}{" "}
+        </div>
+      );
+    } else {
       return "";
     }
   };
+
+  //Function for filtering the chats search and return
+  function getData() {
+    if (searchKey === "") {
+      return allChats;
+    } else {
+      return allUsers.filter(user => {
+        return user.firstname?.toLowerCase().includes(searchKey?.toLowerCase()) ||
+            user.lastname?.toLowerCase().includes(searchKey?.toLowerCase());
+    });
+    }
+  }
+
   //we will filter name with all name entered
   //then display all those in side bar
-  return allUsers
-    .filter((user) => {
-      return (
-        //If the database contains letter as per search key
-        //and after or we are writing if he had chat before
-        ((user.firstname.toLowerCase().includes(searchKey.toLowerCase()) ||
-          user.lastname.toLowerCase().includes(searchKey.toLowerCase())) &&
-          searchKey) ||
-        allChats.some((chat) =>
-          chat.members.map((m) => m._id).includes(user._id)
-        )
-      );
-    })
-    .map((user) => {
-      return (
+  return getData().map((obj) => {
+    let user = obj;
+    if (obj.members) {
+      user = obj.members.find((mem) => mem._id !== currentUser._id);
+    }
+    return (
+      <div
+        key={user._id}
+        className="user-search-filter"
+        onClick={() => openChat(user)}
+      >
         <div
-          key={user._id}
-          className="user-search-filter"
-          onClick={() => openChat(user)}
+          className={IsSelectedChat(user) ? "selected-user" : "filtered-user"}
         >
-          <div
-            className={IsSelectedChat(user) ? "selected-user" : "filtered-user"}
-          >
-            <div className="filter-user-display">
-              {user.profilePic && (
-                <img
-                  src={user.profilePic}
-                  alt="Profile Pic"
-                  className="user-profile-image"
-                />
-              )}
-              {!user.profilePic && (
-                <div
-                  className={
-                    IsSelectedChat(user)
-                      ? "user-selected-avatar"
-                      : "user-default-avatar"
-                  }
-                >
-                  {user.firstname.charAt(0).toUpperCase() +
-                    user.lastname.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <div className="filter-user-details">
-                <div className="user-display-name">{formatName(user)}</div>
-                
-                <div className="user-display-email">
-                  {getLastMessage(user._id) || user.email}
-                </div>
+          <div className="filter-user-display">
+            {user.profilePic && (
+              <img
+                src={user.profilePic}
+                alt="Profile Pic"
+                className="user-profile-image"
+              />
+            )}
+            {!user.profilePic && (
+              <div
+                className={
+                  IsSelectedChat(user)
+                    ? "user-selected-avatar"
+                    : "user-default-avatar"
+                }
+              >
+                {user.firstname.charAt(0).toUpperCase() +
+                  user.lastname.charAt(0).toUpperCase()}
               </div>
-              <div>
-               {getUnreadMessageCount(user._id)}
+            )}
+            <div className="filter-user-details">
+              <div className="user-display-name">{formatName(user)}</div>
+
+              <div className="user-display-email">
+                {getLastMessage(user._id) || user.email}
+              </div>
+            </div>
+            <div>
+              {getUnreadMessageCount(user._id)}
               <div className="last-message-timestamp">
                 {getLastMessageTimeStamp(user._id)}
               </div>
-              </div>
-              {!allChats.find((chat) =>
-                chat.members.map((m) => m._id).includes(user._id)
-              ) && (
-                <div className="user-start-chat">
-                  <button
-                    className="user-start-chat-btn"
-                    onClick={() => startNewChat(user._id)}
-                  >
-                    Start Chat
-                  </button>
-                </div>
-              )}
             </div>
+            {!allChats.find((chat) =>
+              chat.members.map((m) => m._id).includes(user._id)
+            ) && (
+              <div className="user-start-chat">
+                <button
+                  className="user-start-chat-btn"
+                  onClick={() => startNewChat(user._id)}
+                >
+                  Start Chat
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      );
-    });
+      </div>
+    );
+  });
 };
 
 export default UsersList;
