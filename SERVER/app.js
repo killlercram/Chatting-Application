@@ -24,10 +24,12 @@ app.use("/api/user",userRouter);
 app.use("/api/chat",chatRouter);
 app.use("/api/message",messageRouter);
 
-//Testing socket connection from client
+//handling the data coming from the client and sending back to the clients.
 io.on("connection", socket => {
-  console.log("Connected with socket ID: " +socket.id);
-})
+  socket.on("send-message-all",data => {
+    socket.emit("send-message-by-server", "Message from server: " +data.text);
+  });
+});
 
 module.exports = server;
 // module.exports = app;
