@@ -6,6 +6,7 @@ const messageRouter = require("./controllers/messageController");
 
 
 const express = require("express");
+const { Socket } = require("socket.io");
 const app = express();
 app.use(express.json());
 
@@ -25,11 +26,22 @@ app.use("/api/chat",chatRouter);
 app.use("/api/message",messageRouter);
 
 //handling the data coming from the client and sending back to the clients.
+// io.on("connection", socket => {
+//   socket.on("send-message-all",data => {
+//     socket.emit("send-message-by-server", "Message from server: " +data.text);
+//   });
+// });
+
 io.on("connection", socket => {
-  socket.on("send-message-all",data => {
-    socket.emit("send-message-by-server", "Message from server: " +data.text);
+  //Creating a socket room
+  socket.on("join-room", userid => {
+    socket.join(userid);
   });
-});
+  //send to specific user and sending some text back to client
+  socket.on("send-message", (data) => {
+    socket.to(data.recipient).emit("received-message", data.text);
+  })
+})
 
 module.exports = server;
 // module.exports = app;
