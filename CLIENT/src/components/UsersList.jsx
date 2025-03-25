@@ -109,10 +109,7 @@ const UsersList = ({ searchKey , socket}) => {
       //listening to receive-message event from the backend
       socket.on("receive-message", (message) => {
         const selectedChat = store.getState().userReducer.selectedChat;
-        console.log(selectedChat);
-        console.log("message", message);
         let allChats = store.getState().userReducer.allChats;
-        console.log(allChats);
         if(selectedChat?._id !== message.chatId){
           const updatedChats = allChats.map(chat => {
             if(chat._id === message.chatId) {

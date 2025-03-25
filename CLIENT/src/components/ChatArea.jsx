@@ -7,6 +7,7 @@ import { createNewMessage, getAllMessages } from "../apiCalls/message";
 import { clearUnreadMessageCount } from "../apiCalls/chat";
 import moment from "moment";
 import store from "../redux/store"
+import { setAllChats } from "../redux/userSlice";
 
 const ChatArea = ({socket}) => {
   const { selectedChat, user, allChats } = useSelector((state) => state.userReducer);
@@ -86,11 +87,11 @@ const ChatArea = ({socket}) => {
   //Clearing the unread Message Count
   const clearUnreadMessages = async () => {
     try {
-      dispatch(showLoader());
+      socket.emit("clear-unread-messages", {
+        chatId: selectedChat._id,
+        members: selectedChat.members.map(m => m._id)
+      })
       const response = await clearUnreadMessageCount(selectedChat._id);
-      // console.log(response);
-      dispatch(hideLoader());
-      // console.log(response);
 
       if (response.success) {
         // console.log(allChats);
@@ -102,7 +103,6 @@ const ChatArea = ({socket}) => {
         })
       }
     } catch (error) {
-      dispatch(hideLoader());
       toast.error(error.message);
     }
   };
@@ -114,14 +114,44 @@ const ChatArea = ({socket}) => {
     if(selectedChat?.lastMessage?.sender !== user._id){
       clearUnreadMessages();
     }
-    //listening to the receive message event
+    //listening to the receive message event and clearing the unread messages
     socket.on("receive-message", (message) => {
       const selectedChat =store.getState().userReducer.selectedChat;
       if(selectedChat._id === message.chatId){
         setAllMessage(prevmsg => [...prevmsg, message]);
       }
+
+      //calling the Clear unreadMessageCount function 
+      if(selectedChat._id === message.chatId && message.sender !==user._id ){
+        clearUnreadMessages();
+      }
     })
-  },[]);
+
+    //Listening to the message count cleared event from teh server
+    socket.on("message-count-cleared", data => {
+      const selectedChat =store.getState().userReducer.selectedChat;
+      const allChats =store.getState().userReducer.allChats;
+      if(selectedChat._id === data.chatId){
+        //Updating unread message count in chat object
+        const updateChats = allChats.map(chat => {
+          if(chat._id == data.chatId){
+            return {...chat, unreadMessageCount: 0}
+          }
+          return chat;
+        })
+        //updating this change in all chats
+        dispatch(setAllChats(updateChats));
+
+        //Updating Read Property of the message object to true
+        setAllMessage(prevMsgs => {
+          return prevMsgs.map(msg => {
+            return {...msg, read: true}
+          })
+        })
+      }
+
+    })
+  },[selectedChat]);
 
   //getting the scrollbar at the bottom
   useEffect(() => {
