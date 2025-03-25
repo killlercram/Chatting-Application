@@ -38,8 +38,12 @@ io.on("connection", socket => {
     socket.join(userid);
   });
   //send to specific user and sending some text back to client
-  socket.on("send-message", (data) => {
-    socket.to(data.recipient).emit("received-message", data.text);
+  socket.on("send-message", (message) => {
+    console.log(message);
+    io
+    .to(message.members[0])
+    .to(message.members[1])
+    .emit("receive-message", message);
   })
 })
 
