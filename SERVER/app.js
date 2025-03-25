@@ -53,7 +53,15 @@ io.on("connection", socket => {
     .to(data.members[1])
     .emit("message-count-cleared", data)
   })
-  
+
+  //listening the event of user typing and send one event back to client
+  socket.on("user-typing", (data) =>{
+    io
+    .to(data.members[0])
+    .to(data.members[1])
+    .emit("started-typing", data);
+  });
+
 })
 
 

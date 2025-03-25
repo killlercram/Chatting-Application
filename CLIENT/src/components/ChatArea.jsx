@@ -17,6 +17,7 @@ const ChatArea = ({socket}) => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState(" ");
   const [allMessage, setAllMessage] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
 
   //Sending Messages to backend
   const sendMessage = async () => {
@@ -151,13 +152,24 @@ const ChatArea = ({socket}) => {
       }
 
     })
+
+    //Listening to the event sent by the serve in response to our user-typing event
+    socket.on("started-typing", (data) => {
+      // if the user is not the logged in user
+      if(selectedChat._id === data.chatId && data.sender !== user._id){
+        setIsTyping(true);
+        setTimeout(() => {
+          setIsTyping(false);
+        },2000);
+      }
+    });
   },[selectedChat]);
 
   //getting the scrollbar at the bottom
   useEffect(() => {
     const msgContainer = document.getElementById("main-chat-area");
     msgContainer.scrollTop = msgContainer.scrollHeight;
-  },[allMessage]);
+  },[allMessage,isTyping]);
 
   return (
     <>
@@ -208,6 +220,7 @@ const ChatArea = ({socket}) => {
                 </div>
               );
             })}
+            <div className="typing-indicator">{isTyping && <i>typing...</i>}</div>
           </div>
           <div className="send-message-div">
             <input
@@ -217,6 +230,12 @@ const ChatArea = ({socket}) => {
               value={message}
               onChange={(e) => {
                 setMessage(e.target.value);
+                // sending the event to the server of type usertyping
+                socket.emit("user-typing", {
+                  chatId: selectedChat._id,
+                  members: selectedChat.members.map(m => m._id),
+                  sender: user._id
+                })
               }}
             />
             <button
