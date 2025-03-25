@@ -104,12 +104,13 @@ const UsersList = ({ searchKey , socket}) => {
     return fname + " " + lname;
   }
 
-    //uread Message count with socket
-    useEffect(() => {
-      //listening to receive-message event from the backend
-      socket.on("receive-message", (message) => {
-        const selectedChat = store.getState().userReducer.selectedChat;
-        let allChats = store.getState().userReducer.allChats;
+  useEffect(() => {
+    //listening to receive-message event from the backend
+    socket.on("receive-message", (message) => {
+      const selectedChat = store.getState().userReducer.selectedChat;
+      let allChats = store.getState().userReducer.allChats;
+
+      //uread Message count with socket
         if(selectedChat?._id !== message.chatId){
           const updatedChats = allChats.map(chat => {
             if(chat._id === message.chatId) {
@@ -121,8 +122,21 @@ const UsersList = ({ searchKey , socket}) => {
             }
             return chat;
           });
-          dispatch(setAllChats(updatedChats));
+          allChats = updatedChats;
         }
+
+        //Sorting the Chat List as per the message received.
+        //1.Find the lastest Chats
+        const latestChat = allChats.find(chat => chat._id === message.chatId);
+       
+        //2. Get all other Chats
+        const otherChats = allChats.filter(chat => chat._id !== message.chatId);
+
+        //3.Create a new array latest chat on top and then other chats
+
+        allChats = [latestChat, ...otherChats];
+
+        dispatch(setAllChats(allChats));
       });
     },[]);
 
