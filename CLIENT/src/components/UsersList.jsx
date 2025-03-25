@@ -1,12 +1,15 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { createNewChat } from "../apiCalls/chat";
 import { hideLoader, showLoader } from "../redux/loaderSlice";
 import { setAllChats, setSelectedChat } from "../redux/userSlice";
 import moment from "moment";
+import store from "../redux/store";
 
-const UsersList = ({ searchKey }) => {
+const UsersList = ({ searchKey , socket}) => {
+ 
   //importing all users from database
   const {
     allUsers,
@@ -100,6 +103,31 @@ const UsersList = ({ searchKey }) => {
       user.lastname.at(0).toUpperCase() + user.lastname.slice(1).toLowerCase();
     return fname + " " + lname;
   }
+
+    //uread Message count with socket
+    useEffect(() => {
+      //listening to receive-message event from the backend
+      socket.on("receive-message", (message) => {
+        const selectedChat = store.getState().userReducer.selectedChat;
+        console.log(selectedChat);
+        console.log("message", message);
+        let allChats = store.getState().userReducer.allChats;
+        console.log(allChats);
+        if(selectedChat?._id !== message.chatId){
+          const updatedChats = allChats.map(chat => {
+            if(chat._id === message.chatId) {
+              return {
+                ...chat,
+                unreadMessageCount: (chat?.unreadMessageCount || 0) +1,
+                lastMessage: message
+              };
+            }
+            return chat;
+          });
+          dispatch(setAllChats(updatedChats));
+        }
+      });
+    },[]);
 
   //Getting the count for unread message
   const getUnreadMessageCount = (userId) => {

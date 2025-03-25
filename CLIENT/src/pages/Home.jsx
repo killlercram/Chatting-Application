@@ -45,7 +45,7 @@ const Home = () => {
       <HomeHeader></HomeHeader>
       <div className="main-content">
         {/* SideBar layout */}
-        <SideBar></SideBar>
+        <SideBar socket={socket}></SideBar>
         {/* Chat Area layout */}
         {selectedChat && <ChatArea socket={socket}></ChatArea>}
       </div>

@@ -39,7 +39,6 @@ io.on("connection", socket => {
   });
   //send to specific user and sending some text back to client
   socket.on("send-message", (message) => {
-    console.log(message);
     io
     .to(message.members[0])
     .to(message.members[1])

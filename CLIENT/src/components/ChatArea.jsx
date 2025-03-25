@@ -29,7 +29,7 @@ const ChatArea = ({socket}) => {
         ...newMessage,
         members: selectedChat.members.map(m => m._id),
         read: false,
-        createdAt: moment().format("DD-MM-YYYY hh:mm:ss")
+        createdAt: moment().format("YYYY-MM-DD hh:mm:ss")
       })
 
       const response = await createNewMessage(newMessage);
@@ -107,6 +107,7 @@ const ChatArea = ({socket}) => {
     }
   };
 
+  //Receiving the message and then transfering it to the user.
   useEffect(() => {
     getMessage();
     //clearing message count if selected user sees it
@@ -114,7 +115,7 @@ const ChatArea = ({socket}) => {
       clearUnreadMessages();
     }
     //listening to the receive message event
-    socket.off("receive-message").on("receive-message", (message) => {
+    socket.on("receive-message", (message) => {
       const selectedChat =store.getState().userReducer.selectedChat;
       if(selectedChat._id === message.chatId){
         setAllMessage(prevmsg => [...prevmsg, message]);
