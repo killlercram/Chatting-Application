@@ -8,7 +8,7 @@ import { setAllChats, setSelectedChat } from "../redux/userSlice";
 import moment from "moment";
 import store from "../redux/store";
 
-const UsersList = ({ searchKey , socket}) => {
+const UsersList = ({ searchKey , socket, onlineUser}) => {
  
   //importing all users from database
   const {
@@ -196,6 +196,7 @@ const UsersList = ({ searchKey , socket}) => {
                 src={user.profilePic}
                 alt="Profile Pic"
                 className="user-profile-image"
+                style={onlineUser.includes(user._id) ? {border: "#82e0aa 3px solid"}: {}}
               />
             )}
             {!user.profilePic && (
@@ -205,6 +206,7 @@ const UsersList = ({ searchKey , socket}) => {
                     ? "user-selected-avatar"
                     : "user-default-avatar"
                 }
+                style={onlineUser.includes(user._id) ? {border: "#82e0aa 3px solid"}: {}}
               >
                 {user.firstname.charAt(0).toUpperCase() +
                   user.lastname.charAt(0).toUpperCase()}

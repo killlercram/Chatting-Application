@@ -32,6 +32,8 @@ app.use("/api/message",messageRouter);
 //   });
 // });
 
+const onlineUser = [];
+
 io.on("connection", socket => {
   //Creating a socket room
   socket.on("join-room", userid => {
@@ -62,6 +64,13 @@ io.on("connection", socket => {
     .emit("started-typing", data);
   });
 
+  //Handling user loggin event and send back an event 
+  socket.on("user-login", userId => {
+    if(!onlineUser.includes(userId)){
+      onlineUser.push(userId)
+    }
+    socket.emit("online-users", onlineUser);
+  })
 })
 
 
