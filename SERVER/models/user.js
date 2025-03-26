@@ -20,10 +20,9 @@ const userSchema = new Schema(
       required: true,
       select: false
     },
-    profilepPic: {
+    profilePic: {
       type: String,
-      required: false,
-      minlength: 8
+      required: false
     },
   },
   {

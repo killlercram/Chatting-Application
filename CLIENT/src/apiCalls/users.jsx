@@ -3,7 +3,6 @@ import { axiosInstance } from "./index";
 export const getLoggedinUser = async () => {
   try {
    const response = await axiosInstance.get("/api/user/get-logged-user");
-  //  console.log("users:: ", response.data);
    return response.data;
 
   } catch (error) {
@@ -15,9 +14,17 @@ export const getLoggedinUser = async () => {
 export const getAllUsers = async () => {
   try {
    const response = await axiosInstance.get("/api/user/get-all-users");
-  //  console.log("users:: ", response.data);
    return response.data;
+  } catch (error) {
+    return error;
+  }
+}
 
+//Function for calling api of uploading profile pic
+export const uploadProfilePic = async (image) => {
+  try {
+   const response = await axiosInstance.post("/api/user/upload-profile-pic",{image});
+   return response.data;
   } catch (error) {
     return error;
   }

@@ -190,7 +190,7 @@ const UsersList = ({ searchKey , socket, onlineUser}) => {
         <div
           className={IsSelectedChat(user) ? "selected-user" : "filtered-user"}
         >
-          <div className="filter-user-display">
+          <div className="filter-user-display">            
             {user.profilePic && (
               <img
                 src={user.profilePic}

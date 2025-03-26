@@ -1,11 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const HomeHeader = () => {
   const { user } = useSelector((state) => state.userReducer);
   //  console.log(user);
   //  console.log(user?.firstname ? user?.firstname.toUpperCase() : "");
 
+  //creating a navigate function
+  const navigate = useNavigate();
   //getting Full name from the redux store
   function getFullname() {
     let fname =
@@ -32,7 +35,7 @@ const HomeHeader = () => {
       </div>
       <div className="app-user-profile">
         <div className="logged-user-name">{getFullname()}</div>
-        <div className="logged-user-profile-pic">{getInitials()}</div>
+        <div className="logged-user-profile-pic" onClick={() => navigate("/profile")}>{getInitials()}</div>
       </div>
     </div>
   );
