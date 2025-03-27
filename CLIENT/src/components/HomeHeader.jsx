@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const HomeHeader = () => {
+const HomeHeader = ( {socket} ) => {
   const { user } = useSelector((state) => state.userReducer);
   //  console.log(user);
   //  console.log(user?.firstname ? user?.firstname.toUpperCase() : "");
@@ -27,9 +27,20 @@ const HomeHeader = () => {
     let lnameIn = user?.lastname ? user?.lastname.toUpperCase()[0] : " ";
     return fnameIn + lnameIn;
   }
+
+  //Function for logging out user.
+  const logout = () => {
+    //removing the json web token from the local storage
+    localStorage.removeItem("token");
+    navigate("/login");
+
+    //removing that user from online user array
+    socket.emit("user-offline", user._id);
+  }
+
   return (
     <div className="app-header">
-      <div className="app-logo">
+      <div className="app-logo" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
         <i className="fa fa-comments" aria-hidden="true"></i>
         Quick Chat
       </div>
@@ -51,6 +62,9 @@ const HomeHeader = () => {
           </div>
         )}
         <div className="logged-user-name">{getFullname()}</div>
+        <button className="logout-button" onClick={logout}>
+          <i className="fa fa-sign-out"></i>
+        </button>
       </div>
     </div>
   );

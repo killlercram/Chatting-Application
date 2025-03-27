@@ -271,7 +271,7 @@ const ChatArea = ({socket}) => {
             <button
               className="fa fa-paper-plane send-message-btn"
               aria-hidden="true"
-              onClick={sendMessage}
+              onClick={() => sendMessage("")}
             ></button>
           </div>
         </div>

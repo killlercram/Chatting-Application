@@ -78,6 +78,12 @@ io.on("connection", socket => {
     }
     socket.emit("online-users", onlineUser);
   })
+
+  //listening to logout event and change the online user array 
+  socket.on("user-offline", userId => {
+   onlineUser.splice(onlineUser.indexOf(userId), 1);
+    io.emit("online-users-updated", onlineUser);
+  })
 })
 
 

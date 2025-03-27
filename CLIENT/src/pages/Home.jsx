@@ -40,7 +40,12 @@ const Home = () => {
 
       // Handling the user logged in for showing them online 
       socket.emit("user-login", user._id);
+      //adding online users in online users array
       socket.on("online-users", onlineusers => {
+        setOnlineUser(onlineusers);
+      });
+      //removing online user from online users array
+      socket.on("online-users-updated", onlineusers => {
         setOnlineUser(onlineusers);
       });
     }
@@ -49,7 +54,7 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      <HomeHeader></HomeHeader>
+      <HomeHeader socket = {socket}></HomeHeader>
       <div className="main-content">
         {/* SideBar layout */}
         <SideBar socket={socket} onlineUser = {onlineUser}></SideBar>
