@@ -1,4 +1,6 @@
 import { axiosInstance } from ".";
+
+//Creating new messages
 export const createNewMessage = async ( message ) => {
   try {
     const response = await axiosInstance.post("/api/message/new-message", message);
@@ -9,6 +11,7 @@ export const createNewMessage = async ( message ) => {
   }
 }
 
+//Getting all the messages
 export const getAllMessages = async (chatId) => {
   try {
     const response = await axiosInstance.get(`/api/message/get-all-messages/${chatId}`);

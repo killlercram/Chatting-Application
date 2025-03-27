@@ -5,8 +5,8 @@ import userReducer from "./userSlice";
 const store = configureStore({
   reducer: {
     loaderReducer: loaderReducer,
-    userReducer: userReducer
-  }
+    userReducer: userReducer,
+  },
 });
 
 export default store;

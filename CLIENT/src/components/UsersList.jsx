@@ -106,7 +106,7 @@ const UsersList = ({ searchKey , socket, onlineUser}) => {
 
   useEffect(() => {
     //listening to receive-message event from the backend
-    socket.on("receive-message", (message) => {
+    socket.off("set-message-count").on("set-message-count", (message) => {
       const selectedChat = store.getState().userReducer.selectedChat;
       let allChats = store.getState().userReducer.allChats;
 

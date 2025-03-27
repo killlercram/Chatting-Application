@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {signupUser} from "../apiCalls/auth";
+import { signupUser } from "../apiCalls/auth";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { hideLoader, showLoader } from "../redux/loaderSlice";
-
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -20,30 +19,27 @@ const Signup = () => {
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setUser (values => ({...values, [name]: value}));
-  }
+    setUser((values) => ({ ...values, [name]: value }));
+  };
 
   //handling Form submission
-  const handleSubmit = async (event) =>{
+  const handleSubmit = async (event) => {
     event.preventDefault();
     let response = null;
     try {
-      dispatch(showLoader());//showing the function
+      dispatch(showLoader()); //showing the function
       response = await signupUser(user);
-      dispatch(hideLoader());//hiding the function
-      // console.log(response);
-      if(response.success){
+      dispatch(hideLoader()); //hiding the function
+      if (response.success) {
         toast.success(response.message);
-      }else{
+      } else {
         toast.error(response.message);
       }
     } catch (error) {
-      dispatch(hideLoader());//hiding the function
+      dispatch(hideLoader()); //hiding the function
       toast.error(response.message || error.message);
-      // console.error("Signup error:", error.response?.data || error.message);
-      // return error.response?.data || { message: "Something went wrong!" };
     }
-  }
+  };
 
   return (
     <div className="container">

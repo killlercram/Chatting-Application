@@ -52,6 +52,10 @@ io.on("connection", socket => {
     .to(message.members[0])
     .to(message.members[1])
     .emit("receive-message", message);
+    io
+    .to(message.members[0])
+    .to(message.members[1])
+    .emit("set-message-count", message);
   })
 
 
@@ -83,6 +87,7 @@ io.on("connection", socket => {
   socket.on("user-offline", userId => {
    onlineUser.splice(onlineUser.indexOf(userId), 1);
     io.emit("online-users-updated", onlineUser);
+
   })
 })
 

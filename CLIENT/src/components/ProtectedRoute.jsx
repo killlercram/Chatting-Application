@@ -26,14 +26,11 @@ const ProtectedRoute = ({ children }) => {
 
       if (response.success) {
         dispatch(setUser(response.data));
-        // console.log("PR", user);
       } else {
-        // console.log("PR er1", user);
         toast.error(response.message);
         navigate("/login");
       }
     } catch (error) {
-      // console.log("PR er2", user);
       dispatch(hideLoader());
       navigate("/login");
     }
@@ -46,35 +43,29 @@ const ProtectedRoute = ({ children }) => {
       dispatch(showLoader());
       response = await getAllUsers();
       dispatch(hideLoader());
-      // console.log("REsponse", response);
       if (response.success) {
-        // console.log("response: ",response);
         dispatch(setAllUsers(response.data));
       } else {
-        //  console.log("PR er1", user);
         toast.error(response.message);
         navigate("/login");
       }
     } catch (error) {
-      // console.log("PR err2:" ,user);
       dispatch(hideLoader());
       navigate("/login");
     }
   };
 
   //Getting all the chats of the loggedin User
-  const getCurrentUserChats = async () =>{
+  const getCurrentUserChats = async () => {
     let response = null;
     try {
       dispatch(showLoader());
       response = await getAllChats();
       dispatch(hideLoader());
-      // console.log("REsponse", response);
+
       if (response.success) {
-        // console.log("response: ",response);
         dispatch(setAllChats(response.data));
       } else {
-        //  console.log("PR er1", user);
         toast.error(response.message);
         navigate("/login");
       }

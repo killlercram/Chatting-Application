@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const HomeHeader = ( {socket} ) => {
+const HomeHeader = ({ socket }) => {
   const { user } = useSelector((state) => state.userReducer);
   //  console.log(user);
   //  console.log(user?.firstname ? user?.firstname.toUpperCase() : "");
@@ -36,27 +36,31 @@ const HomeHeader = ( {socket} ) => {
 
     //removing that user from online user array
     socket.emit("user-offline", user._id);
-  }
+  };
 
   return (
     <div className="app-header">
-      <div className="app-logo" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
+      <div
+        className="app-logo"
+        onClick={() => navigate("/")}
+        style={{ cursor: "pointer" }}
+      >
         <i className="fa fa-comments" aria-hidden="true"></i>
         Quick Chat
       </div>
       <div className="app-user-profile">
         {user?.profilePic && (
           <img
-          src={user?.profilePic}
-          alt="Profile Pic"
-          className="logged-user-profile-pic"
-          onClick={() => navigate("/profile")}
+            src={user?.profilePic}
+            alt="Profile Pic"
+            className="logged-user-profile-pic"
+            onClick={() => navigate("/profile")}
           ></img>
         )}
         {!user?.profilePic && (
           <div
-          className="logged-user-profile-pic"
-          onClick={() => navigate("/profile")}
+            className="logged-user-profile-pic"
+            onClick={() => navigate("/profile")}
           >
             {getInitials()}
           </div>
