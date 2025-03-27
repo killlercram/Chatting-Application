@@ -32,13 +32,6 @@ app.use("/api/user",userRouter);
 app.use("/api/chat",chatRouter);
 app.use("/api/message",messageRouter);
 
-//handling the data coming from the client and sending back to the clients.
-// io.on("connection", socket => {
-//   socket.on("send-message-all",data => {
-//     socket.emit("send-message-by-server", "Message from server: " +data.text);
-//   });
-// });
-
 const onlineUser = [];
 
 io.on("connection", socket => {

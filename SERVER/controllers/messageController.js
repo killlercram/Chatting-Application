@@ -9,13 +9,6 @@ router.post("/new-message", authMiddleware, async (req, res) => {
     //1.Storing the message in message collection
     const newMessage = new Message(req.body);
     const savedMessage = await newMessage.save();
-
-    //2.Update the lastMessage in chat collection
-    // const currentChat = await Chat.findById(req.body.chatId);
-    // currentChat.lastMessage = savedMessage._id;
-    // await currentChat.save();
-
-    // console.log("Request", req);
     const currentChat = await Chat.findOneAndUpdate({
       _id: req.body.chatId, //finding current chat id & updating
     }, {
@@ -37,9 +30,6 @@ router.post("/new-message", authMiddleware, async (req, res) => {
 
 //Getting all messages of two parties
 router.get("/get-all-messages/:chatId", authMiddleware, async (req, res) =>{
-  // console.log("Params:" ,req.params);
-  // console.log("Body", req.body);
-  // console.log("Headers", req.headers);
   try {
     const allMessages = await Message.find({chatId: req.params.chatId}).sort({createdAt: 1});
 
