@@ -34,8 +34,23 @@ const HomeHeader = () => {
         Quick Chat
       </div>
       <div className="app-user-profile">
+        {user?.profilePic && (
+          <img
+          src={user?.profilePic}
+          alt="Profile Pic"
+          className="logged-user-profile-pic"
+          onClick={() => navigate("/profile")}
+          ></img>
+        )}
+        {!user?.profilePic && (
+          <div
+          className="logged-user-profile-pic"
+          onClick={() => navigate("/profile")}
+          >
+            {getInitials()}
+          </div>
+        )}
         <div className="logged-user-name">{getFullname()}</div>
-        <div className="logged-user-profile-pic" onClick={() => navigate("/profile")}>{getInitials()}</div>
       </div>
     </div>
   );
