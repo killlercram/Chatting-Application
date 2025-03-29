@@ -5,7 +5,11 @@ import ChatArea from "../components/ChatArea";
 import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
-const socket = io(import.meta.env.VITE_BACKEND_URL);
+//Attaching Socket to the code
+const socket = io(import.meta.env.VITE_BACKEND_URL, {
+  transports: ["websocket"],  // Force WebSocket transport
+  withCredentials: true       // Allow credentials (cookies, auth headers)
+});
 const Home = () => {
   const { selectedChat, user } = useSelector((state) => state.userReducer);
   const [onlineUser, setOnlineUser] = useState([]);
