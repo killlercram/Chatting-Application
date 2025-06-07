@@ -28,9 +28,19 @@ jobs:
           cache: 'npm'
       
       - name: Installing dependencies
+        working-directory: ./CLIENT
         run: npm ci
 
       - name: Checking Error
+        working-directory: ./CLIENT
+        run: npm run lint
+
+      - name: Installing dependencies
+        working-directory: ./SERVER
+        run: npm ci
+
+      - name: Checking Error
+        working-directory: ./SERVER
         run: npm run lint
 
   build:
@@ -52,9 +62,19 @@ jobs:
           cache: 'npm'
 
       - name: "Installing dependencies"
+        working-directory: ./CLIENT
         run: npm ci
 
       - name: "Build"
+        working-directory: ./CLIENT
+        run: npm run build
+
+      - name: "Installing dependencies"
+        working-directory: ./SERVER
+        run: npm ci
+
+      - name: "Build"
+        working-directory: ./SERVER
         run: npm run build
 
 
