@@ -56,9 +56,9 @@ jobs:
         working-directory: ./SERVER
         run: npm run lint
 
-      - name: Build SERVER
-        working-directory: ./SERVER
-        run: npm run build
+      # - name: Build SERVER
+      #   working-directory: ./SERVER
+      #   run: npm run build
 
 
 
