@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./SERVER
+    ports:
+      - "${PORT_NUMBER}:${PORT_NUMBER}"
+    environment:
+      - PORT=${PORT_NUMBER}
+      - MONGO_URL=${MONGO_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - FRONT_END_KEY=${FRONT_END_KEY}
+      - CLOUD_NAME=${CLOUD_NAME}
+      - CLOUD_API_KEY=${CLOUD_API_KEY}
+      - CLOUD_API_SECRET=${CLOUD_API_SECRET}
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./CLIENT
+    environment:
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL}
+    ports: 
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:

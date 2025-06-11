@@ -1,5 +1,9 @@
 #Stage 1:Building the Application
-FROM node:18-alpine AS builder
+FROM node:lts-slim AS builder
+
+# ARG VITE_BACKEND_URL
+# ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
+
 
 #Setting working directory inside the docker image
 WORKDIR /app
@@ -14,7 +18,7 @@ RUN npm run build
 
 
 #Stage 2: Server Stage
-FROM node:18-alpine
+FROM node:lts-slim
 
 #installing static file server
 RUN npm i -g serve
@@ -24,9 +28,9 @@ WORKDIR /app
 COPY --from=builder /app/dist .
 
 #Exposing the app's port manually
-EXPOSE 5000
+EXPOSE 3000
 
-CMD [ "serve", "-s", ".", "-l", "5000" ]
+CMD [ "serve", "-s", ".", "-l", "3000" ]
 
 
 

@@ -1,7 +1,7 @@
-FROM node:18-alpine
+FROM node:lts-slim
 WORKDIR /app
 COPY package*.json ./ 
 RUN npm ci
 COPY . .
-EXPOSE 5000
-CMD [ "node", "start" ]
+EXPOSE ${PORT_NUMBER}
+CMD [ "npm","run", "start" ]

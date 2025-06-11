@@ -56,9 +56,94 @@ jobs:
         working-directory: ./SERVER
         run: npm run lint
 
-      # - name: Build SERVER
-      #   working-directory: ./SERVER
-      #   run: npm run build
+#       # - name: Build SERVER
+#       #   working-directory: ./SERVER
+#       #   run: npm run build
+
+
+
+
+
+# #CI workflow to build, test, and lint the CURD app on push or pull request
+
+# name: CI pipeline
+# on: 
+#   push: 
+#     branches: [ "*" ]
+#   pull_request:
+#     branches: [ "*" ]
+
+# jobs:
+#   lint:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         node-version: [18.x, 20.x, 22.x]
+
+#     steps:
+#       # Checking if the code in repo if it is feasible
+#       - name: checkout code
+#         uses: actions/checkout@v4
+
+#       #Setting node version
+#       - name: Use Node.js ${{matrix.node-version}}
+#         uses: actions/setup-node@v4
+
+#         with:
+#           node-version: ${{matrix.node-version}}
+#           cache: 'npm'
+#           cache-dependency-path: ./CLIENT/package-lock.json
+      
+#       - name: Installing dependencies
+#         working-directory: ./CLIENT
+#         run: npm ci
+
+#       - name: Checking Error
+#         working-directory: ./CLIENT
+#         run: npm run lint
+
+#       - name: Installing dependencies
+#         working-directory: ./SERVER
+#         run: npm ci
+
+#       - name: Checking Error
+#         working-directory: ./SERVER
+#         run: npm run lint
+
+#   build:
+#     runs-on: ubuntu-latest
+#     needs: lint
+
+#     strategy:
+#       matrix:
+#         node-version: [18.x, 20.x, 22.x]
+      
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: use Node.js ${{matrix.node-version}}
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: ${{matrix.node-version}}
+#           cache: 'npm'
+
+#       - name: "Installing dependencies"
+#         working-directory: ./CLIENT
+#         run: npm ci
+
+#       - name: "Build"
+#         working-directory: ./CLIENT
+#         run: npm run build
+
+#       # - name: "Installing dependencies"
+#       #   working-directory: ./SERVER
+#       #   run: npm ci
+
+#       # - name: "Build"
+#       #   working-directory: ./SERVER
+#       #   run: npm run build 
+
 
 
 
